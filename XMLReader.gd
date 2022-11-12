@@ -46,14 +46,18 @@ func parse(parser:XMLParser) -> void:
 	node_paths.clear()
 	
 	var path := PoolStringArray()
+	var nodes := []
 	while parser.read() != ERR_FILE_EOF:
 		match parser.get_node_type():
 			parser.NODE_ELEMENT:
 				var parent_node = get_element(path)
 				var current_node = parser.get_node_name()
-				path.append(current_node)
-				parent_node[current_node] = {}
 				
+				nodes.append(current_node)
+				current_node += "_%s" % (nodes.count(current_node) - 1)
+				
+				parent_node[current_node] = {}
+				path.append(current_node)
 				node_paths.append([current_node, path])
 				
 				var num_attrs = parser.get_attribute_count()
@@ -63,7 +67,6 @@ func parse(parser:XMLParser) -> void:
 					attrs = parent_node[current_node][attrs]
 					for idx in range(num_attrs):
 						attrs[parser.get_attribute_name(idx)] = parser.get_attribute_value(idx)
-			
 			parser.NODE_TEXT:
 				var parent_node = get_element(path)
 				parent_node["%s_text" % path[-1]] = parser.get_node_data()
@@ -81,19 +84,21 @@ func get_element(path:Array, dict:Dictionary=xml_dict) -> Dictionary:
 	return element
 
 func find_element(node_name:String) -> PoolStringArray:
-	# Returns the path to the first occurence of node_name. If the node does 
-	# not exist, returns an empty PoolStringArray.
+	# Returns the path to node_name. If the node does not exist, returns an 
+	# empty PoolStringArray.
 	for node in node_paths:
 		if node[0] == node_name:
 			return node[1]
 	return PoolStringArray()
 
 func find_all_element(node_name:String) -> Array:
-	# Returns an array of paths (PoolStringArrays) to all of a given element.
-	# If node_name does not exist, returns and empty Array.
+	# Returns an array of paths (PoolStringArrays) to all of node_name.
+	# for this function, node_name is used without the _integer naming 
+	# convention. eg, "Contents" will find Contents_0, ...Contents_0+n for as 
+	# many exist If node_name does not exist, returns and empty Array.
 	var paths := []
 	for node in node_paths:
-		if node[0] == node_name:
+		if node[0] == node_name + ("_%s" % node[0].split("_")[-1]):
 			paths.append(node[1])
 	return paths
 
