@@ -104,6 +104,7 @@ func find_all_element(node_name:String) -> Array:
 	return paths
 
 func list_nodes() -> Array:
+	# Returns an array of the node names in the xml document.
 	var nodes := []
 	for node in node_paths:
 		nodes.append(node[0])
