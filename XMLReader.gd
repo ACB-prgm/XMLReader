@@ -114,6 +114,11 @@ func find_all_element(node_name:String) -> Array:
 			paths.append(node[1])
 	return paths
 
+func find_and_get_element(node_name:String) -> Dictionary:
+	# A simple helper function for the common use case of finding and getting an
+	# element by name.
+	return get_element(find_element(node_name))
+
 func list_nodes() -> Array:
 	# Returns an array of the node names in the xml document.
 	var nodes := []
