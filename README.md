@@ -52,6 +52,9 @@ OUT:
 ### find_all_element(node_name:String) -> Array:  
 *Returns an array of paths (PoolStringArrays) to all of node_name. for this function, node_name is used without the _integer naming convention. eg, "Contents" will find Contents_0, ...Contents_0+n for as many exist If node_name does not exist, returns and empty Array.*
 
+### find_and_get_element(node_name:String) -> Dictionary:
+*A simple helper function for the common use case of finding and getting an element by name.*
+
 ### list_nodes() -> Array:
 *Returns an array of the node names in the xml document.*
 
