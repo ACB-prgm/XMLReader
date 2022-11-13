@@ -11,7 +11,9 @@ In the xml dictionary, each node element has `_n` appended to it, where `n` is t
 const xml_string = "<Entry><DisplayName>ACB_Gamez</DisplayName><Contents><Msg>Hello!</Msg><LastModified>2022-11-10T15:57:51.000Z</LastModified></Contents></Entry>"
 
 var xml = XMLReader.new()
-xml.open_string(xml_string)
+var ERR = xml.open_string(xml_string)
+if ERR != OK:
+	push_error(ERR)
 var path = xml.find_element("Contents_0")
 print(xml.prettify("\t", xml.get_element(path)))
 ```
@@ -30,16 +32,16 @@ OUT:
 
 ## DOCUMENTATION
 ### open_file(file_path:String) -> int:  
-*Opens and parses an xml document that is stored in a file at `file_path`.*
+*Opens and parses an xml document that is stored in a file at `file_path`. Returns a GlobalScope ERROR value*
 
 ### open_buffer(buffer:PoolByteArray) -> int:  
-*Opens and parses an xml document that has been loaded into memory as a PoolByteArray.*
+*Opens and parses an xml document that has been loaded into memory as a PoolByteArray. Returns a GlobalScope ERROR value*
 
 ### open_string(string:String) -> int:  
-*Opens and parses an xml document that has been loaded into memory as a String.*
+*Opens and parses an xml document that has been loaded into memory as a String. Returns a GlobalScope ERROR value*
 
 ### parse(parser:XMLParser) -> void:  
-*Parses a xml document that has been opened with XMLParser and loads it into a dictionary. This should only be used internally by open_file(), open_buffer(), and open_string(), but can be used if an instance of XMLParser is returned from some exogenous function.*
+*Parses a xml document that has been opened with XMLParser and loads it into a dictionary. This should only be used internally by open_file(), open_buffer(), and open_string(), but can be used if an instance of XMLParser is returned from some exogenous function. Returns a GlobalScope ERROR value*
 
 ### get_element(path:Array, dict:Dictionary=xml_dict) -> Dictionary:  
 *Returns the dictionary of child nodes of a node at path.*
@@ -49,6 +51,9 @@ OUT:
 
 ### find_all_element(node_name:String) -> Array:  
 *Returns an array of paths (PoolStringArrays) to all of node_name. for this function, node_name is used without the _integer naming convention. eg, "Contents" will find Contents_0, ...Contents_0+n for as many exist If node_name does not exist, returns and empty Array.*
+
+### find_and_get_element(node_name:String) -> Dictionary:
+*A simple helper function for the common use case of finding and getting an element by name.*
 
 ### list_nodes() -> Array:
 *Returns an array of the node names in the xml document.*
