@@ -9,39 +9,45 @@ var node_paths := []
 # PARSERS ——————————————————————————————————————————————————————————————————————
 func open_file(file_path:String) -> int:
 	# Opens and parses an xml document that is stored in a file at `file_path`.
+	# Returns a GlobalScope ERROR value
 	xml_dict.clear()
 	var parser = XMLParser.new()
 	var ERR = parser.open(file_path)
-	
 	if ERR != OK:
 		push_warning("XMLParser ERR %s" % ERR)
 		return ERR
 	
-	self.parse(parser)
+	ERR = parse(parser)
+	if ERR != OK:
+		return ERR
+	
 	return OK
 
 func open_buffer(buffer:PoolByteArray) -> int:
-	# Opens and parses an xml document that has been loaded into memory 
-	# as a PoolByteArray.
+	# Opens and parses an xml document that has been loaded into memory as a 
+	# PoolByteArray. Returns a GlobalScope ERROR value
 	var parser = XMLParser.new()
 	var ERR = parser.open_buffer(buffer)
 	if ERR != OK:
 		push_warning("XMLParser ERR %s, unable to read buffer" % ERR)
 		return ERR
 	
-	self.parse(parser)
+	ERR = parse(parser)
+	if ERR != OK:
+		return ERR
+	
 	return OK
 
 func open_string(string:String) -> int:
 	# Opens and parses an xml document that has been loaded into memory as a
-	# String.
+	# String. Returns a GlobalScope ERROR value
 	return self.open_buffer(string.to_utf8())
 
-func parse(parser:XMLParser) -> void:
+func parse(parser:XMLParser) -> int:
 	# Parses a xml document that has been opened with XMLParser and loads it
 	# into a dictionary. This should only be used internally by open_file(), 
 	# open_buffer(), and open_string(), but can be used if an instance of 
-	# XMLParser is returned from some exogenous function.
+	# XMLParser is returned from some exogenous function.  Returns an Error.
 	xml_dict.clear()
 	node_paths.clear()
 	
@@ -74,6 +80,11 @@ func parse(parser:XMLParser) -> void:
 			parser.NODE_ELEMENT_END:
 # warning-ignore:narrowing_conversion
 				path.resize(max(0, path.size() - 1))
+	
+	if xml_dict.empty():
+		return ERR_DOES_NOT_EXIST
+	
+	return OK
 
 
 # ELEMENT AND PATH GETTERS ————————————————————————————————————————————————————————
