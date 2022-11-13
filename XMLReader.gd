@@ -68,8 +68,9 @@ func parse(parser:XMLParser) -> void:
 					for idx in range(num_attrs):
 						attrs[parser.get_attribute_name(idx)] = parser.get_attribute_value(idx)
 			parser.NODE_TEXT:
-				var parent_node = get_element(path)
-				parent_node["%s_text" % path[-1]] = parser.get_node_data()
+				if path:
+					var parent_node = get_element(path)
+					parent_node["%s_text" % path[-1]] = parser.get_node_data()
 			parser.NODE_ELEMENT_END:
 # warning-ignore:narrowing_conversion
 				path.resize(max(0, path.size() - 1))
@@ -102,6 +103,11 @@ func find_all_element(node_name:String) -> Array:
 			paths.append(node[1])
 	return paths
 
+func list_nodes() -> Array:
+	var nodes := []
+	for node in node_paths:
+		nodes.append(node[0])
+	return nodes
 
 # QOL FUNCTIONS ————————————————————————————————————————————————————————————————
 func prettify(delimeter:String="\t", dict:Dictionary=xml_dict) -> String:
