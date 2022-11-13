@@ -50,6 +50,9 @@ OUT:
 ### find_all_element(node_name:String) -> Array:  
 *Returns an array of paths (PoolStringArrays) to all of node_name. for this function, node_name is used without the _integer naming convention. eg, "Contents" will find Contents_0, ...Contents_0+n for as many exist If node_name does not exist, returns and empty Array.*
 
+### list_nodes() -> Array:
+*Returns an array of the node names in the xml document.*
+
 ### prettify(delimeter:String="\t", dict:Dictionary=xml_dict) -> String:  
 *Returns a "prettified" (readable) string of the xml dictionary. Defaults to using the entire xml document.*
 
